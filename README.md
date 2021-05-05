@@ -1,6 +1,6 @@
 # Data Modeling with Postgres
 >
-In this project, a relational database is created by using Postgres to analyze two datasets, which contain the songs and the user activities in JSON format. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook.
+In this project, a relational database is created by using Postgres to analyze two datasets, which contain the songs and the user activities in JSON format. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook, together with a test notebook to confirm the validity of the database.
 
 ## Table of contents
 
@@ -86,17 +86,17 @@ This includes the following tables:
 ## Files in this Project
 In addition to the data files, the project workspace includes six files:
 
-1. `test.ipynb` displays the first few rows of each table to let you check your database.
+1. `test.ipynb` displays the first few rows of each table. This allows us to check the validity of the database.
 
-2. `create_tables.py` drops and creates your tables. You run this file to reset your tables before each time you run your ETL scripts.
+2. `create_tables.py` drops and creates the tables. We can run this file to reset the tables before each time you run the ETL scripts.
 
-3. `etl.ipynb` reads and processes a single file from song_data and log_data and loads the data into your tables. This notebook contains detailed instructions on the ETL process for each of the tables.
+3. `etl.ipynb` reads and processes a single file from song_data and log_data and loads the data into the tables. This notebook contains detailed instructions on the ETL process for each of the tables.
 
-4. `etl.py` reads and processes files from song_data and log_data and loads them into your tables. You can fill this out based on your work in the ETL notebook.
+4. `etl.py` reads and processes files from song_data and log_data and loads them into the tables.
 
-5. `sql_queries.py` contains all your sql queries, and is imported into the last three files above.
+5. `sql_queries.py` contains all the sql queries, and is imported into the last three files above.
 
-6. `README.md` provides discussion on your project.
+6. `README.md` provides discussion on this project.
 
 ## Project Instructions
 1. Run `create_tables.py` to reset your tables.
