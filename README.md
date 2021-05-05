@@ -1,6 +1,6 @@
 # Data Modeling with Postgres
 >
-Summary of this project
+In this project, a relational database is created by using Postgres to analyze two datasets, which contain the songs and the user activities in JSON format. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook.
 
 ## Table of contents
 
