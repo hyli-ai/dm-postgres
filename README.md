@@ -1,6 +1,10 @@
 # Data Modeling with Postgres
 >
-In this project, a relational database is created by using Postgres to analyze two datasets, which contain the songs and the user activities in JSON format. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook, together with a test notebook to confirm the validity of the database.
+This project focuses on data modeling techniques with Postgres<sup>*</sup> to build an ETL pipeline using Python.
+
+Two datasets, which contain the songs and the user activities in JSON format, were analyzed. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook, together with a test notebook to confirm the validity of the database.
+
+<sup>*</sup>Postgres, or PostgreSQL, is a commonly used open-source relational database management system (RDBMS). It can be deployed [locally](https://www.codementor.io/@engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) or [in the cloud](https://aws.amazon.com/rds/postgresql/).
 
 ## Table of contents
 
@@ -99,9 +103,106 @@ In addition to the data files, the project workspace includes six files:
 6. `README.md` provides discussion on this project.
 
 ## Project Instructions
-1. Run `create_tables.py` to reset your tables.
+1. Run `create_tables.py` to reset the tables.
+
+    What this python script does is to establishes connection, drops all the tables, creates all tables needed, and finally, closes the connection, with the following command:
+
+    ```python
+    cur, conn = create_database()
+    
+    drop_tables(cur, conn)
+    create_tables(cur, conn)
+
+    conn.close()
+    ```
+
+    The drop_tables() and create_tables() functions have individual list of queries to execute which are imported from `sql_queries.py` where all the queries are located.
+
+    ```sql
+    create_table_queries = [songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
+    drop_table_queries = [songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
+    ```
 
 2. Run `etl.py` where the ETL processes for each table is developed.
 
-3. (Optional) Run `test.ipynb` to confirm your records were successfully inserted into each table.
+    Five tables, according the the ER diagram, are created. Here is just a highlight of the ETL process. For complete steps with description, please refer to `etl.ipynb`.
+
+    ### Extract Process
+
+    2-1. Function `get_files` is defined to list the path of all the files in JSON format which will be extracted:
+
+    ```python
+    def get_files(filepath):
+    all_files = []
+    for root, dirs, files in os.walk(filepath):
+        files = glob.glob(os.path.join(root,'*.json'))
+        for f in files :
+            all_files.append(os.path.abspath(f))
+    
+    return all_files
+    ```
+
+    2-2. Files are then loaded into a pandas DataFrame:
+
+    ```python
+    song_files = get_files('./data/song_data')
+    df = pd.read_json(filepath, lines=True)
+    ```
+
+    ### Transform Process
+
+    2-3. For a simple dataset the approach is just to select the columns to be loaded. For example, 5 columns (out of 10) are selected using the `df.values` method:
+
+    ```python
+    song_data = df[['song_id', 'title', 'artist_id', 'year', 'duration']].values.tolist()[0]
+    ```
+
+    2-4. For a more complex dataset, extra measures need to be taken in order to get the desired data. The **time** table, for example, has to go through the following steps from the timestamp in the column `ts` to get the formatted time:
+
+    - First we have to filter the `NextSong` action:
+        ```python
+        df['page'] == 'NextSong'
+        ```
+
+    - Next, convert the `ts` timestamp column in milliseconds to datetime:
+        ```python
+        t = pd.to_datetime(df['ts'], unit='ms')
+        ```
+    
+    - Extract the timestamp, hour, day, week of year, month, year, and weekday from the ts column and set time_data to a list containing these values in order:
+        ```python
+        time_data = df['ts'].tolist(),t.dt.hour.values.tolist(), t.dt.day.values.tolist(), \
+            t.dt.week.values.tolist(),t.dt.month.values.tolist(), t.dt.year.values.tolist(), \
+            t.dt.weekday.values.tolist()
+        ```
+    
+    - Specify labels for these columns and set to column_labels:
+        ```python
+        column_labels = ('Timestamp','hour', 'day','week','month','year','weekday')
+        ```
+    - Create a dataframe, time_df, containing the time data for this file by combining column_labels and time_data into a dictionary and converting this into a dataframe:
+        ```python
+        time_df = pd.DataFrame(list(time_data), index = list(column_labels)).transpose()
+        ```
+
+    ### Load Process
+
+    2-5. Insert the transformed data into the table. Here is how to insert the data `song_data` into the table named **songs** using the sql query shown in the next paragraph:
+
+    ```python
+    cur.execute(song_table_insert, song_data)
+    conn.commit()
+    ```
+
+    ```sql
+    song_table_insert = ("""
+    INSERT INTO songs (
+        song_id, title, artist_id, year, duration
+    )
+    VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (song_id) DO NOTHING;
+    """)
+
+
+3. (Optional) Run `test.ipynb` to confirm the records were successfully inserted into each table.
 
