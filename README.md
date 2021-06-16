@@ -1,10 +1,10 @@
 # Data Modeling with Postgres
 >
-This project focuses on data modeling techniques with Postgres<sup>*</sup> to build an ETL pipeline using Python.
+This project focuses on data modeling techniques with Postgres[^1] to build an ETL pipeline using Python.
 
 Two datasets, which contain the songs and the user activities in JSON format, were analyzed. A star schema optimized for queries on song play analysis and an ETL pipeline are presented in the jupyter notebook, together with a test notebook to confirm the validity of the database.
 
-<sup>*</sup>Postgres, or PostgreSQL, is a commonly used open-source relational database management system (RDBMS). It can be deployed [locally](https://www.codementor.io/@engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) or [in the cloud](https://aws.amazon.com/rds/postgresql/).
+[^1]: Postgres, or PostgreSQL, is a commonly used open-source relational database management system (RDBMS). It can be deployed [locally](https://www.codementor.io/@engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb) or [in the cloud](https://aws.amazon.com/rds/postgresql/).
 
 ## Table of contents
 
