@@ -238,3 +238,32 @@ In addition to the data files, the project workspace includes six files:
 3. **Isolation**: Transactions are processed *independently and securely*, order does not matter. A low level of isolation enables many users to access the data simultaneously, however this also increases the possibilities of concurrency effects (e.g., dirty reads or lost updates). On the other hand, a high level of isolation reduces these chances of concurrency effects, but also uses more system resources and transactions blocking each other.
 
 4. **Durability**: Completed transactions are saved to database even in cases of system failure. A commonly cited example includes tracking flight seat bookings. So once the flight booking records a confirmed seat booking, the seat remains booked even if a system failure occurs.
+
+### Data Modeling (or Dimensional Modeling)
+
+#### Fact Table
+
+1. Record business **events**, like an order, a phone call, a book review.
+2. Fact table columns record events in **quantifiable metrics** like quantity of an item, duration of a call, or a book rating.
+
+#### Dimension Table
+
+1. Record the **context** of the business events. (who, what, where, why, etc.)
+2. Dimension table columns contain **attributes** like the store at which an item is purchased, or the customer who made the call.
+
+#### Fact or Dimension Dilemma
+
+If you are unsure if a column is a fact or dimension, the simplest rule is that a Fact is usually **Numeric** and **Additive**
+
+Examples (Facts):
+1. A **comment** on an article represents an event, but we cannot easily make a statistic out of its context. (Not a good Fact)
+2. A **invoice number** is numeric but adding it does not make sense. (Not a good Fact)
+3. Total amount of an invoice. (A good Fact)
+
+Examples (Dimensions):
+1. **Date** and **time** are always a dimension.
+2. Physical locations and their attributes. (A good dimension)
+3. Human roles like customers and staffs (A good dimension)
+4. Goods sold. (A good dimension)
+
+
